@@ -1,3 +1,34 @@
+'''
+from tkinter import *
+from tkinter import ttk
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+
+    def initWidgets(self):
+        self.st = StringVar()
+        ttk.Entry(self.master, textvariable = self.st, width = 24, font = ('SiSong', 20, 'bold'), foreground = 'red').pack(fill = BOTH, expand = YES)
+        f = Frame(self.master)
+        f.pack()
+        ttk.Button(f, text = '改变', command = self.change).pack(side=LEFT)
+        ttk.Button(f, text='获取', command = self.get).pack(side = LEFT)
+    
+    def change(self):
+        books = ('疯狂Python讲义', '疯狂Kotilin讲义', '疯狂Swift讲义')
+        import random
+        self.st.set(books[random.randint(0, 2)])
+    
+    def get(self):
+        from tkinter import messagebox
+        messagebox.showinfo(title='输入内容', message=self.st.get() )
+
+root = Tk()
+root.title("Variable的测试")
+App(root)
+root.mainloop()
+'''
+
 # =========================================290======================================
 '''
 from tkinter import *
@@ -262,4 +293,168 @@ root.iconbitmap( 'G:\\08 Code\Python\\crazy_python\\key.ico')
 App(root)
 root.mainloop()
 
+'''
+# =========================================306======================================
+'''
+from tkinter import *
+from tkinter import ttk
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        self.strVar = StringVar()
+        self.cb = ttk.Combobox(self.master,  textvariable=self.strVar, postcommand=self.choose)
+        self.cb.pack(side=TOP)
+        self.cb['values'] = ['Python', 'Ruby', 'Kotlin', 'Swift']
+        f = Frame(self.master)
+        f.pack()
+        self.isreadonly = IntVar()
+        Checkbutton(f, text = '是否只读：', variable=self.isreadonly, command=self.change).pack(side = LEFT)
+    def choose(self):
+        from tkinter import messagebox
+        messagebox.showinfo(title=None, message=str(self.cb.get()))
+    def change(self):
+        self.cb['state'] = 'readonly' if self.isreadonly.get() else 'enable'
+        print(self.isreadonly.get())
+    def setvalue(self):
+        self.strVar.set('我爱Python')
+root  = Tk()
+root.title("CommoBox测试")
+root.iconbitmap( 'G:\\08 Code\Python\\crazy_python\\key.ico')
+App(root)
+root.mainloop()
+
+'''
+
+
+# =========================================317======================================
+'''
+from tkinter import *
+from tkinter import ttk
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+
+    def initWidgets(self):
+        self.sv = StringVar()
+        self.om = ttk.OptionMenu(root,
+            self.sv ,
+            'Python',
+            'Kotlin',
+            'Ruby',
+            'Swift',
+            'Java',
+            'Python',
+            'JavaScript',
+            'Erlang',
+            command = self.print_option)
+        self.om.pack()
+        lf = ttk.LabelFrame(self.master, padding=20, text='请选择菜单方向')
+        lf.pack(fill=BOTH, expand =YES,padx=10,pady=10)
+        self.directions = ['below','above','left','right','flush']
+        i = 0
+        self.intVar = IntVar()
+        for direct in self.directions:
+            Radiobutton(lf, text=direct,
+                        value=i,command=self.change,variable=self.intVar).pack(side=LEFT)
+            i += 1
+        self.intVar.set(3)
+
+    def print_option(self, val):
+        print(self.sv.get(), val)
+
+    def change(self):
+        self.om['direction'] = self.directions[self.intVar.get()]
+root = Tk()
+root.title("OptionMeun测试")
+root.iconbitmap( 'G:\\08 Code\Python\\crazy_python\\key.ico')
+App(root)
+root.mainloop()
+
+'''
+
+# =========================================322======================================
+'''
+from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox
+
+# 自定义对话框类，继承Toplevel
+class MyDialog(Toplevel):
+    def __init__(self, parent, title = None, modal=True):
+        Toplevel.__init__(self, parent)
+        self.transient(parent)
+        if title:
+            self.title(title)
+        self.parent = parent
+        self.result = None
+        frame = Frame(self)
+        self.initial_focus = self.init_widgets(frame) # ??????
+        frame.pack(padx=5, pady = 5)
+        self.init_buttons()
+        if modal: self.grab_set()
+        if not self.initial_focus:
+            self.initial_focus = self
+        self.protocol("WM_DELETE_WINDOW", self.cancel_click)
+        self.geometry("+%d+%d" % (parent.winfo_rootx()+50, parent.winfo_rooty()+50))
+        print( self.initial_focus)
+        self.initial_focus.focus_set()
+        self.wait_window(self)
+    #通过该方法创建自定义对话框内容
+    def init_widgets(self, master):
+        Label(master, text='用户名', font = 12, width = 10).grid(row=1, column=0)
+        self.name_entry = Entry(master, font = 16)
+        self.name_entry.grid(row=1,column=1)
+        Label(master, text='密 码', font = 12, width=10).grid(row=2, column=0)
+        self.pass_entry = Entry(master, font = 16)
+        self.pass_entry.grid(row=2, column=1)
+    #通过该方法创建对话框下的按钮
+    def init_buttons(self):
+        f = Frame(self)
+        w = Button(f, text='确定', width=10, command=self.cancel_click)
+        w.pack(side=LEFT, padx=5, pady=5)
+        self.bind("<Return>",self.ok_click)
+        self.bind("<Escape>", self.cancel_click)
+        f.pack()
+    def validate(self):
+        return True
+    def process_input(self):
+        user_name = self.name_entry.get()
+        user_pass = self.pass_entry.get()
+        messagebox.showinfo(message='用户输入的用户名：%s,密码：%s' % (user_name, user_pass))
+    def ok_click(self, event=None):
+        print('确定')
+        if not self.validate():
+            self.initial_focus.focus_set()
+            return
+        self.withdraw()
+        self.update_idletasks()   
+        self.process_input()
+        self.parent.focus_set()
+        self.destroy()
+
+    def cancel_click(self, event=None):
+        print('取消')  
+        self.parent.focus_set()
+        self.destroy()
+
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.initWidgets()
+    def initWidgets(self):
+        ttk.Button(self.master, text='模式对话框',command=self.open_modal).pack(side=LEFT,ipadx=5,ipady=5,padx=10)
+        ttk.Button(self.master, text='非模式对话框',command=self.open_none_modal).pack(side=LEFT,ipadx=5,ipady=5,padx=10)
+
+    def open_modal(self):
+        d = MyDialog(self.master, title='模式对话框')
+    def open_none_modal(self):
+        d  = MyDialog(self.master, title='非模式对话框', modal=False)
+root = Tk()
+root.title("对话框测试")
+root.iconbitmap( 'G:\\08 Code\Python\\crazy_python\\key.ico')
+App(root)
+root.mainloop()
 '''

@@ -458,3 +458,77 @@ root.iconbitmap( 'G:\\08 Code\Python\\crazy_python\\key.ico')
 App(root)
 root.mainloop()
 '''
+# ===============================330 窗口菜单===========================
+'''
+from tkinter import *
+from tkinter import ttk
+from tkinter import messagebox as msgbox
+
+class App:
+    def __init__(self, master):
+        self.master = master
+        self.init_menu()
+    
+    def init_menu(self):
+        menubar = Menu(self.master)
+        self.master.filenew_icon = PhotoImage(file = '')
+        self.master.fileopen_icon = PhotoImage(file = '')
+        self.master['menu'] = menubar
+
+        file_menu = Menu(menubar, tearoff=0)
+        menubar.add_cascade(label='文件',menu=file_menu)
+
+        lang_menu = Menu(menubar, tearoff=0)
+        menubar.add_cascade(label='选择语言', menu=lang_menu)
+
+        file_menu.add_command(label='新建', command=None, image=self.master.filenew_icon  , compound=LEFT)
+        file_menu.add_command(label='打开', command=None, image=self.master.fileopen_icon  , compound=LEFT)
+        file_menu.add_separator()
+
+        sub_menu = Menu(file_menu, tearoff=0)
+        file_menu.add_cascade(label='选择性别',menu=sub_menu)
+        self.genderVar = StringVar()
+        for i , im in enumerate(['男', '女', '保密']):
+            print(i, im)
+            sub_menu.add_radiobutton(label=im, command=self.choose_gender, variable=self.genderVar, value=im)
+
+        self.langVars = [StringVar(), StringVar(), StringVar(), StringVar()]
+        for i,im in enumerate(('Python', 'Kotlin', 'Swift', 'Java')):
+            print(i, im, self.langVars[i])
+            lang_menu.add_checkbutton(label=im, command=self.choose_lang, onvalue = im, variable=self.langVars[i])
+        
+    def choose_gender(self):
+        msgbox.showinfo(message=('选择的性别为：%s' % self.genderVar.get()))
+    def choose_lang(self):
+        rt_list = [e.get() for e in self.langVars]
+        msgbox.showinfo(message=('选择的语言是：%s' % ','.join(rt_list)))
+
+root = Tk()
+root.title('菜单测试')
+root.geometry('400x200')
+root.resizable(width=False,height=False)
+App(root)
+root.mainloop()
+'''
+
+# ==============================349===================
+'''
+from tkinter import *
+
+root = Tk()
+cv = Canvas(root, bg = 'white')
+cv.pack()
+cv.create_rectangle(30, 30, 220, 150, 
+                    width = 8, 
+                    tags=('r1', 'r2', 'r3' ))
+
+def first(event):
+    print("第一次的函数")
+def second(event):
+    print("第二次的函数")
+
+cv.tag_bind("r1", '<Button-1>', first)
+cv.tag_bind('r1', '<Button-1>',second, add = True)
+root.mainloop()
+
+'''

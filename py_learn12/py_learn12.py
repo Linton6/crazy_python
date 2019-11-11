@@ -51,7 +51,8 @@ f.close()'''
 # 3.实现一个程序，该程序提示用户输入一个文件路径，程序读取这个包含手机号的文本文件（该文件内容可能很大），
 #要求程序能识别出该文件中所有的手机号码，并将这些手机号码保存到phone.txt文件中
 
-'''import fileinput
+'''
+import fileinput
 import sys
 import os
 import re
